@@ -4,8 +4,7 @@
   "shell-version": [
     "40",
     "41",
-    "42",
-    "45"
+    "42"
   ],
   "url": "https://github.com/lfarkas/gnome3-extensions",
   "uuid": "lockscreen-button",

@@ -1,7 +1,6 @@
 /* -*- mode: js2; js2-basic-offset: 4; indent-tabs-mode: nil -*- */
 
 /*
- * Copyright © 2023 Levente Farkas
  * Copyright © 2014 Sriram Ramkrishna
  *
  * This library is free software; you can redistribute it and/or
@@ -18,45 +17,33 @@
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  * Author: Sriram Ramkrishna <sri@ramkrishna.me>
- * Author: Levente Farkas <lfarkas@lfarkas.org>
  */
 
 /*
  * Simple extension to lock the screen from an icon on the panel.
  */
 
-import Clutter from 'gi://Clutter';
-import St from 'gi://St';
+const { St, Clutter } = imports.gi;
 
-import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
-/*import * as ScreenSaver from 'resource:///org/gnome/shell/misc/screenSaver.js';*/
-import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+/*const ScreenSaver = imports.misc.screenSaver;*/
+const Main = imports.ui.main;
+let _lockScreenButton = null;
 
-export default class LockScreenButtonExtension extends Extension {
-	lockScreenButton = null;
+function init() {
 
-	enable() {
-		this.lockScreenButton = new St.Bin({
-			style_class: 'panel-button',
-			reactive: true,
-			can_focus: true,
-			y_align: Clutter.ActorAlign.CENTER,
-			track_hover: true
-		});
-		let icon = new St.Icon({
-			icon_name: 'changes-prevent-symbolic',
-			style_class: 'system-status-icon'
-		});
-		this.lockScreenButton.set_child(icon);
-		this.lockScreenButton.connect('button-press-event', _LockScreenActivate);
-
-		Main.panel._rightBox.insert_child_at_index(this.lockScreenButton, 0);
-	}
-
-	disable() {
-		Main.panel._rightBox.remove_actor(this.lockScreenButton);
-		this.lockScreenButton = null;
-	}
+	_lockScreenButton = new St.Bin({
+		style_class: 'panel-button',
+		reactive: true,
+		can_focus: true,
+		y_align: Clutter.ActorAlign.CENTER,
+		track_hover: true
+	});
+	let icon = new St.Icon({
+		icon_name: 'changes-prevent-symbolic',
+		style_class: 'system-status-icon'
+	});
+	_lockScreenButton.set_child(icon);
+	_lockScreenButton.connect('button-press-event', _LockScreenActivate);
 }
 
 function _LockScreenActivate() {
@@ -64,4 +51,13 @@ function _LockScreenActivate() {
 	/*	screenSaverProxy = new ScreenSaver.ScreenSaverProxy();
 		screenSaverProxy.LockRemote();*/
 	Main.screenShield.lock(true)
+}
+
+
+function enable() {
+	Main.panel._rightBox.insert_child_at_index(_lockScreenButton, 0);
+}
+
+function disable() {
+	Main.panel._rightBox.remove_actor(_lockScreenButton);
 }
