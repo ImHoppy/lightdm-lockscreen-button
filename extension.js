@@ -26,6 +26,7 @@
 const { St, Clutter } = imports.gi;
 
 /*const ScreenSaver = imports.misc.screenSaver;*/
+const { spawnCommandLine } = imports.misc.util;
 const Main = imports.ui.main;
 let _lockScreenButton = null;
 
@@ -50,9 +51,9 @@ function _LockScreenActivate() {
 	Main.overview.hide();
 	/*	screenSaverProxy = new ScreenSaver.ScreenSaverProxy();
 		screenSaverProxy.LockRemote();*/
-	Main.screenShield.lock(true)
+	// Main.screenShield.lock(true)
+	spawnCommandLine('dm-tool lock');
 }
-
 
 function enable() {
 	Main.panel._rightBox.insert_child_at_index(_lockScreenButton, 0);
